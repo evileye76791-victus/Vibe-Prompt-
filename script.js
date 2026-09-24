@@ -1,20 +1,20 @@
 window.promptsData = [];
 let currentFullPrompt = "";
 
-// Media Fallback Handler
+// Media Fallback System (.mp4 -> .jpg -> .png -> hide)
 function handleMediaFallback(el, baseRef, step = 1, isFullView = false) {
   const container = isFullView ? document.getElementById('fullMediaBox') : el.parentElement;
   if (step === 1) {
-    container.innerHTML = `<img src="${baseRef}.jpg" class="${isFullView ? 'full-detail-media' : 'media-preview'}" loading="lazy" alt="AI Visual" onerror="handleMediaFallback(this, '${baseRef}', 2, ${isFullView})">`;
+    container.innerHTML = `<img src="${baseRef}.jpg" class="${isFullView ? 'full-detail-media' : 'media-preview'}" loading="lazy" onerror="handleMediaFallback(this, '${baseRef}', 2, ${isFullView})">`;
   } else if (step === 2) {
-    container.innerHTML = `<img src="${baseRef}.png" class="${isFullView ? 'full-detail-media' : 'media-preview'}" loading="lazy" alt="AI Visual" onerror="handleMediaFallback(this, '${baseRef}', 3, ${isFullView})">`;
+    container.innerHTML = `<img src="${baseRef}.png" class="${isFullView ? 'full-detail-media' : 'media-preview'}" loading="lazy" onerror="handleMediaFallback(this, '${baseRef}', 3, ${isFullView})">`;
   } else {
     container.style.display = 'none';
     container.innerHTML = '';
   }
 }
 
-// Dynamically Load JS Files (p1.js to p50.js)
+// Load Prompt JS Files Dynamically (p1.js to p50.js)
 async function loadScripts() {
   const loadScript = (i) => new Promise((resolve) => {
     const s = document.createElement('script');
@@ -29,7 +29,7 @@ async function loadScripts() {
   }
 }
 
-// Generate Individual Prompt Card
+// Render Main Grid
 function createTakiesCard(item, id, index) {
   const baseRef = item.refId || `p${index + 1}ref`;
   return `
@@ -39,7 +39,7 @@ function createTakiesCard(item, id, index) {
       </div>
       <div class="card-head">
         <span class="card-title">${item.title || 'Untitled Prompt'}</span>
-        <span class="tag">${item.description || item.category || 'AI PROMPT'}</span>
+        <span class="tag">${item.description || item.category || 'AI'}</span>
       </div>
       <div class="prompt-content">${item.prompt || ''}</div>
       <button class="copy-btn" id="btn-${id}" onclick="event.stopPropagation(); copyPromptText('btn-${id}', \`${encodeURIComponent(item.prompt || '')}\`)">
@@ -50,7 +50,6 @@ function createTakiesCard(item, id, index) {
   `;
 }
 
-// Render Prompt Cards on Screen
 function renderGrid() {
   const grid = document.getElementById('explore-grid');
   const query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -58,9 +57,7 @@ function renderGrid() {
   const fragment = document.createDocumentFragment();
 
   window.promptsData.forEach((item, index) => {
-    const match = (item.title?.toLowerCase().includes(query)) || 
-                  (item.prompt?.toLowerCase().includes(query)) || 
-                  (item.description?.toLowerCase().includes(query));
+    const match = (item.title?.toLowerCase().includes(query)) || (item.prompt?.toLowerCase().includes(query)) || (item.description?.toLowerCase().includes(query));
     if (match) {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = createTakiesCard(item, `exp-${index}`, index);
@@ -71,15 +68,7 @@ function renderGrid() {
   grid.appendChild(fragment);
 }
 
-// Tag Quick Filter Functionality
-function filterByTag(tagName) {
-  const searchInput = document.getElementById('searchInput');
-  searchInput.value = tagName;
-  renderGrid();
-  window.scrollTo({ top: searchInput.offsetTop - 100, behavior: 'smooth' });
-}
-
-// Open Prompt Full Detail View
+// Open Full Detail Page
 function openFullPage(index) {
   const item = window.promptsData[index];
   if (!item) return;
@@ -100,7 +89,6 @@ function openFullPage(index) {
   window.scrollTo(0, 0);
 }
 
-// Close Detail View
 function closeFullPage() {
   const mediaBox = document.getElementById('fullMediaBox');
   mediaBox.innerHTML = '';
@@ -109,7 +97,7 @@ function closeFullPage() {
   document.getElementById('page-explore').classList.add('active-page');
 }
 
-// Copy Action Handlers
+// Copy Logic
 function copyPromptText(btnId, encodedText) {
   const text = decodeURIComponent(encodedText);
   navigator.clipboard.writeText(text).then(() => {
@@ -152,5 +140,5 @@ function copyFullPrompt() {
   });
 }
 
-// Start Application
+// Initialize App
 loadScripts();
