@@ -1,58 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Vibe Prompt Space</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Primary SEO Meta Tags -->
+  <title>Vibe Prompt Space - Best AI Prompts Library</title>
+  <meta name="title" content="Vibe Prompt Space - Best AI Prompts Library">
+  <meta name="description" content="Discover, preview, and copy ultra-high quality AI prompts for Midjourney, ChatGPT, Sora, Claude, and Gemini. Unleash your visual creativity.">
+  <meta name="keywords" content="AI Prompts, Midjourney Prompts, ChatGPT Prompts, Sora AI Video, Free AI Prompt Library, Vibe Prompt Space, Anime Prompts">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Vibe Prompt Space">
+
+  <!-- Open Graph / WhatsApp / Facebook Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://evileye76791-victus.github.io/Vibe-Prompt-/">
+  <meta property="og:title" content="Vibe Prompt Space - Free AI Prompt Collection">
+  <meta property="og:description" content="Copy top-rated cinematic, anime, and creative prompts for AI image and video generators.">
+
+  <!-- Schema Markup for Search Engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Vibe Prompt Space",
+    "url": "https://evileye76791-victus.github.io/Vibe-Prompt-/",
+    "description": "High-quality AI prompt library for Midjourney, ChatGPT, Sora, and AI visual creation."
+  }
+  </script>
+
+  <!-- Typography & Styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="page-container">
 
-    <!-- Top Navigation Header (Without Upload Button) -->
-    <div class="brand-nav">
+    <!-- Top Branding Navigation -->
+    <header class="brand-nav">
       <div class="brand-logo-text">Vibe Prompt</div>
-    </div>
+      <span class="beta-badge">PRO</span>
+    </header>
 
     <!-- MAIN EXPLORE PAGE -->
-    <div id="page-explore" class="page active-page">
-      <div class="hero-banner">
+    <main id="page-explore" class="page active-page">
+      <section class="hero-banner">
         <h1 class="hero-title">Prompt Space</h1>
-        <p class="hero-subtitle">Access high-quality AI prompts effortlessly</p>
-        <p class="hero-tags">
-          <span class="tag-mj">Midjourney</span> • 
-          <span class="tag-chat">ChatGPT</span> • 
-          <span class="tag-claude">Claude</span> • 
-          <span class="tag-gemini">Gemini</span>
-        </p>
+        <p class="hero-subtitle">High-quality AI prompts for Next-Gen Visuals & Text</p>
+        
+        <div class="tags-cloud">
+          <span class="tag-chip tag-mj" onclick="filterByTag('Midjourney')">Midjourney</span>
+          <span class="tag-chip tag-chat" onclick="filterByTag('ChatGPT')">ChatGPT</span>
+          <span class="tag-chip tag-claude" onclick="filterByTag('Claude')">Claude</span>
+          <span class="tag-chip tag-gemini" onclick="filterByTag('Gemini')">Gemini</span>
+          <span class="tag-chip tag-sora" onclick="filterByTag('Sora')">Sora / Luma</span>
+        </div>
 
         <div class="search-wrapper">
-          <input type="text" id="searchInput" class="search-bar" placeholder="Search prompts..." oninput="renderGrid()">
-          <button class="search-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </button>
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchInput" class="search-bar" placeholder="Search prompts by title, style or tag..." oninput="renderGrid()">
         </div>
+      </section>
+
+      <div class="section-header">
+        <h2 class="section-title">Explore Prompts</h2>
       </div>
 
-      <div class="section-title">Featured Prompts</div>
       <div class="grid-1col" id="explore-grid"></div>
-    </div>
+    </main>
 
     <!-- FULL DETAIL VIEW -->
-    <div id="full-detail-page" class="full-detail-view">
-      <button class="back-btn" onclick="closeFullPage()">← Back to Prompts</button>
+    <section id="full-detail-page" class="full-detail-view">
+      <button class="back-btn" onclick="closeFullPage()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Prompts
+      </button>
+
       <div class="detail-media-container" id="fullMediaBox" style="display: none;"></div>
-      <div class="full-prompt-box">
+
+      <div class="full-prompt-card">
         <div class="card-head">
-          <h2 id="fullTitle" style="color: #fff; font-size: 1.2rem;"></h2>
-          <span class="tag" id="fullTag">AI</span>
+          <h2 id="fullTitle"></h2>
+          <span class="tag" id="fullTag">AI PROMPT</span>
         </div>
+
+        <div class="code-box-header">
+          <span>PROMPT TEXT</span>
+          <button class="copy-btn copy-btn-header" id="fullCopyBtnHeader" onclick="copyFullPrompt()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy
+          </button>
+        </div>
+
         <div class="full-prompt-text" id="fullPromptText"></div>
-        <button class="copy-btn" id="fullCopyBtn" style="padding: 14px; font-size: 0.9rem;">Copy Prompt</button>
+
+        <button class="copy-btn copy-btn-main" id="fullCopyBtnMain" onclick="copyFullPrompt()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy Full Prompt
+        </button>
       </div>
-    </div>
+    </section>
 
   </div>
 
