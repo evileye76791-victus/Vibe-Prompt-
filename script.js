@@ -1,7 +1,7 @@
 window.promptsData = [];
 let currentFullPrompt = "";
 
-// Media Fallback System (.mp4 -> .jpg -> .png -> hide)
+// Media Fallback (.mp4 -> .jpg -> .png -> hide)
 function handleMediaFallback(el, baseRef, step = 1, isFullView = false) {
   const container = isFullView ? document.getElementById('fullMediaBox') : el.parentElement;
   if (step === 1) {
@@ -14,7 +14,7 @@ function handleMediaFallback(el, baseRef, step = 1, isFullView = false) {
   }
 }
 
-// Load Prompt JS Files Dynamically (p1.js to p50.js)
+// Dynamically Load JS Files (p1.js, p2.js, ...)
 async function loadScripts() {
   const loadScript = (i) => new Promise((resolve) => {
     const s = document.createElement('script');
@@ -29,8 +29,8 @@ async function loadScripts() {
   }
 }
 
-// Render Main Grid
-function createTakiesCard(item, id, index) {
+// Generate Main Card (Only Media & Title)
+function createTakiesCard(item, index) {
   const baseRef = item.refId || `p${index + 1}ref`;
   return `
     <div class="takies-card" onclick="openFullPage(${index})">
@@ -41,31 +41,42 @@ function createTakiesCard(item, id, index) {
         <span class="card-title">${item.title || 'Untitled Prompt'}</span>
         <span class="tag">${item.description || item.category || 'AI'}</span>
       </div>
-      <div class="prompt-content">${item.prompt || ''}</div>
-      <button class="copy-btn" id="btn-${id}" onclick="event.stopPropagation(); copyPromptText('btn-${id}', \`${encodeURIComponent(item.prompt || '')}\`)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        Copy Prompt
-      </button>
     </div>
   `;
 }
 
+// Render Grid with Advanced Search Matching
 function renderGrid() {
   const grid = document.getElementById('explore-grid');
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const rawQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+  const searchWords = rawQuery.split(' ').filter(word => word.length > 0);
+  
   grid.innerHTML = '';
   const fragment = document.createDocumentFragment();
+  let count = 0;
 
   window.promptsData.forEach((item, index) => {
-    const match = (item.title?.toLowerCase().includes(query)) || (item.prompt?.toLowerCase().includes(query)) || (item.description?.toLowerCase().includes(query));
-    if (match) {
+    const titleText = (item.title || '').toLowerCase();
+    const promptText = (item.prompt || '').toLowerCase();
+    const descText = (item.description || item.category || '').toLowerCase();
+    const combinedText = `${titleText} ${promptText} ${descText}`;
+
+    // Checks if all search words exist inside card content
+    const matchesAllWords = searchWords.every(word => combinedText.includes(word));
+
+    if (searchWords.length === 0 || matchesAllWords) {
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = createTakiesCard(item, `exp-${index}`, index);
+      tempDiv.innerHTML = createTakiesCard(item, index);
       fragment.appendChild(tempDiv.firstElementChild);
+      count++;
     }
   });
 
-  grid.appendChild(fragment);
+  if (count === 0 && searchWords.length > 0) {
+    grid.innerHTML = `<div class="no-results">No prompts found matching "${rawQuery}"</div>`;
+  } else {
+    grid.appendChild(fragment);
+  }
 }
 
 // Open Full Detail Page
@@ -98,21 +109,6 @@ function closeFullPage() {
 }
 
 // Copy Logic
-function copyPromptText(btnId, encodedText) {
-  const text = decodeURIComponent(encodedText);
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById(btnId);
-    if (!btn) return;
-    const origContent = btn.innerHTML;
-    btn.innerHTML = `✓ Copied!`;
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.innerHTML = origContent;
-      btn.classList.remove('copied');
-    }, 2000);
-  });
-}
-
 function copyFullPrompt() {
   navigator.clipboard.writeText(currentFullPrompt).then(() => {
     const btnMain = document.getElementById('fullCopyBtnMain');
